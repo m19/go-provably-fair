@@ -45,31 +45,42 @@ func bytesToFloat64(arr [][]byte) float64 {
 	return total
 }
 
-func calculateLimbo() float64 {
-	clientSeed := ""
-	serverSeed := ""
-	nonce := 1
-	round := 0
-
+func calculateRoll(clientSeed string, serverSeed string, nonce int, round int) float64 {
 	limit := 1
-
 	bytes := hmacSha256(clientSeed, serverSeed, nonce, round)
 	bytesArray := chunkArray(bytes, 4)
-
 	bytesArray = bytesArray[0:limit]
-
-	total := bytesToFloat64(bytesArray)
-	total = total * 100000000
 
 	fmt.Println(bytes)
 	fmt.Println(bytesArray)
-	fmt.Println(total)
+
+	total := bytesToFloat64(bytesArray)
+	return total
+}
+
+func calculateLimbo(clientSeed string, serverSeed string, nonce int) float64 {
+	round := 0
+	total := calculateRoll(clientSeed, serverSeed, nonce, round)
+	total = total * 100000000
 
 	result := 1000000 / (math.Floor(total) + 1) * houseEdge
 
 	return result * 100
 }
 
+func calculateDice(clientSeed string, serverSeed string, nonce int) float64 {
+	round := 0
+	total := calculateRoll(clientSeed, serverSeed, nonce, round)
+	total = total * 10001
+
+	return total / 100
+}
+
 func main() {
-	fmt.Println(calculateLimbo())
+	clientSeed := ""
+	serverSeed := ""
+	nonce := 1
+
+	fmt.Println("limbo:", calculateLimbo(clientSeed, serverSeed, nonce))
+	fmt.Println("dice:", calculateDice(clientSeed, serverSeed, nonce))
 }
