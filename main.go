@@ -76,6 +76,7 @@ func calculateLimbo(clientSeed string, serverSeed string, nonce int) float64 {
 	return result * 100
 }
 
+// this calculates a dice roll between 0 and 100.00
 func calculateDice(clientSeed string, serverSeed string, nonce int) float64 {
 	limit := 1
 	round := 0
@@ -85,14 +86,15 @@ func calculateDice(clientSeed string, serverSeed string, nonce int) float64 {
 	return total / 100
 }
 
-func calculateCards(clientSeed string, serverSeed string, nonce int) []float64 {
+// this shuffle a deck of cards. A deck consists of 52 cards. 4 suits and 13 ranks per suit
+func shuffleCards(clientSeed string, serverSeed string, nonce int) []float64 {
 	limit := 8
 
 	var cardIndexes []float64
 
 	// this will get the first 6*8 = 48 cards
-	for i := 0; i < 6; i++ {
-		rolls := calculateRolls(clientSeed, serverSeed, nonce, i, limit)
+	for round := 0; round < 6; round++ {
+		rolls := calculateRolls(clientSeed, serverSeed, nonce, round, limit)
 		for j := 0; j < len(rolls); j++ {
 			value := math.Floor(rolls[j] * 52)
 			cardIndexes = append(cardIndexes, value)
@@ -104,8 +106,8 @@ func calculateCards(clientSeed string, serverSeed string, nonce int) []float64 {
 
 	// we only need 4 more bytes to get to 52 cards
 	rolls := calculateRolls(clientSeed, serverSeed, nonce, round, 4)
-	for j := 0; j < len(rolls); j++ {
-		value := math.Floor(rolls[j] * 52)
+	for i := 0; i < len(rolls); i++ {
+		value := math.Floor(rolls[i] * 52)
 		cardIndexes = append(cardIndexes, value)
 	}
 
@@ -119,5 +121,5 @@ func main() {
 
 	fmt.Println("limbo:", calculateLimbo(clientSeed, serverSeed, nonce))
 	fmt.Println("dice:", calculateDice(clientSeed, serverSeed, nonce))
-	fmt.Println("cards:", calculateCards(clientSeed, serverSeed, nonce))
+	fmt.Println("cards:", shuffleCards(clientSeed, serverSeed, nonce))
 }
