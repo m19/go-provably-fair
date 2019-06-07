@@ -16,7 +16,6 @@ func TestLimbo(t *testing.T) {
 	}
 
 	result = calculateLimbo(clientSeed, serverSeed, 2)
-	result = float64(int(result*100)) / 100
 	expected = 1.82
 
 	if result != expected {
@@ -29,7 +28,6 @@ func TestDice(t *testing.T) {
 	serverSeed := ""
 
 	result := calculateDice(clientSeed, serverSeed, 1)
-	result = float64(int(result*100)) / 100
 
 	expected := 6.56
 	if result != expected {

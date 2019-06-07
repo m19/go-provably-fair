@@ -69,11 +69,13 @@ func calculateLimbo(clientSeed string, serverSeed string, nonce int) float64 {
 	limit := 1
 	round := 0
 	total := calculateRolls(clientSeed, serverSeed, nonce, round, limit)[0]
-	total = total * 100000000
+	total = total * 1000000
 
 	result := 1000000 / (math.Floor(total) + 1) * houseEdge
 
-	return result * 100
+	rounded := float64(int(result*100)) / 100
+
+	return rounded
 }
 
 // this calculates a dice roll between 0 and 100.00
@@ -81,9 +83,11 @@ func calculateDice(clientSeed string, serverSeed string, nonce int) float64 {
 	limit := 1
 	round := 0
 	total := calculateRolls(clientSeed, serverSeed, nonce, round, limit)[0]
-	total = total * 10001
+	total = total * 10001 / 100
 
-	return total / 100
+	rounded := float64(int(total*100)) / 100
+
+	return rounded
 }
 
 // this shuffle a deck of cards. A deck consists of 52 cards. 4 suits and 13 ranks per suit
@@ -114,6 +118,19 @@ func shuffleCards(clientSeed string, serverSeed string, nonce int) []float64 {
 	return cardIndexes
 }
 
+func displayCards(cards []float64) []string {
+	deck := [...]string{"♦2", "♥2", "♠2", "♣2", "♦3", "♥3", "♠3", "♣3", "♦4", "♥4", "♠4", "♣4", "♦5", "♥5", "♠5", "♣5", "♦6", "♥6", "♠6", "♣6", "♦7", "♥7", "♠7", "♣7", "♦8", "♥8", "♠8", "♣8", "♦9", "♥9", "♠9", "♣9", "♦10", "♥10", "♠10", "♣10", "♦J", "♥J", "♠J", "♣J", "♦Q", "♥Q", "♠Q", "♣Q", "♦K", "♥K", "♠K", "♣K", "♦A", "♥A", "♠A", "♣A"}
+
+	var shuffledDeck []string
+
+	for i := 0; i < len(cards); i++ {
+		cardIndex := int(cards[i])
+		shuffledDeck = append(cardsDisplayed, cardsString[cardIndex])
+	}
+
+	return shuffledDeck
+}
+
 func main() {
 	clientSeed := ""
 	serverSeed := ""
@@ -122,4 +139,5 @@ func main() {
 	fmt.Println("limbo:", calculateLimbo(clientSeed, serverSeed, nonce))
 	fmt.Println("dice:", calculateDice(clientSeed, serverSeed, nonce))
 	fmt.Println("cards:", shuffleCards(clientSeed, serverSeed, nonce))
+	fmt.Println("cards:", displayCards(shuffleCards(clientSeed, serverSeed, nonce)))
 }
