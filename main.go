@@ -43,14 +43,14 @@ func chunkArray(arr []byte, chunkSize int) [][]byte {
 	return groups
 }
 
-func calculateRolls(clientSeed string, serverSeed string, nonce int, round int, chunkSize int, limit int) []float64 {
+func calculateRolls(clientSeed string, serverSeed string, nonce int, round int, limit int) []float64 {
 	bytes := hmacSha256(clientSeed, serverSeed, nonce, round)
 
-	if chunkSize*limit > 32 {
-		panic("hash is only 32 bytes big")
+	if limit > 8 {
+		panic("hash is only 8*4 = 32 bytes big")
 	}
 
-	bytesArray := chunkArray(bytes, chunkSize)
+	bytesArray := chunkArray(bytes, 4)
 
 	if limit < 8 {
 		bytesArray = bytesArray[0:limit]
@@ -66,10 +66,9 @@ func calculateRolls(clientSeed string, serverSeed string, nonce int, round int, 
 }
 
 func calculateLimbo(clientSeed string, serverSeed string, nonce int) float64 {
-	chunk := 4
 	limit := 1
 	round := 0
-	total := calculateRolls(clientSeed, serverSeed, nonce, round, chunk, limit)[0]
+	total := calculateRolls(clientSeed, serverSeed, nonce, round, limit)[0]
 	total = total * 100000000
 
 	result := 1000000 / (math.Floor(total) + 1) * houseEdge
@@ -78,32 +77,33 @@ func calculateLimbo(clientSeed string, serverSeed string, nonce int) float64 {
 }
 
 func calculateDice(clientSeed string, serverSeed string, nonce int) float64 {
-	chunk := 4
 	limit := 1
 	round := 0
-	total := calculateRolls(clientSeed, serverSeed, nonce, round, chunk, limit)[0]
+	total := calculateRolls(clientSeed, serverSeed, nonce, round, limit)[0]
 	total = total * 10001
 
 	return total / 100
 }
 
 func calculateCards(clientSeed string, serverSeed string, nonce int) []float64 {
-	chunk := 4
 	limit := 8
 
 	var cardIndexes []float64
 
 	// this will get the first 6*8 = 48 cards
 	for i := 0; i < 6; i++ {
-		rolls := calculateRolls(clientSeed, serverSeed, nonce, i, chunk, limit)
+		rolls := calculateRolls(clientSeed, serverSeed, nonce, i, limit)
 		for j := 0; j < len(rolls); j++ {
 			value := math.Floor(rolls[j] * 52)
 			cardIndexes = append(cardIndexes, value)
 		}
 	}
 
+	round := 6
+	limit = 4
+
 	// we only need 4 more bytes to get to 52 cards
-	rolls := calculateRolls(clientSeed, serverSeed, nonce, 6, chunk, 4)
+	rolls := calculateRolls(clientSeed, serverSeed, nonce, round, 4)
 	for j := 0; j < len(rolls); j++ {
 		value := math.Floor(rolls[j] * 52)
 		cardIndexes = append(cardIndexes, value)
