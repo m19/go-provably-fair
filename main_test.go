@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"testing"
 )
 
@@ -10,17 +9,30 @@ func TestLimbo(t *testing.T) {
 	serverSeed := ""
 
 	result := calculateLimbo(clientSeed, serverSeed, 1)
-	resultFormatted := fmt.Sprintf("%.2f", result)
-	expected := "15.07"
-	if resultFormatted != "15.07" {
-		t.Errorf("Result not what was expected. Got %s. Expected %s", resultFormatted, expected)
+	result = float64(int(result*100)) / 100
+	expected := 15.07
+	if result != expected {
+		t.Errorf("Result not what was expected. Got %f. Expected %f", result, expected)
 	}
 
 	result = calculateLimbo(clientSeed, serverSeed, 2)
-	resultFormatted = fmt.Sprintf("%.2f", result)
-	expected = "1.82"
+	result = float64(int(result*100)) / 100
+	expected = 1.82
 
-	if resultFormatted != "1.82" {
-		t.Errorf("Result not what was expected. Got %s. Expected %s", resultFormatted, expected)
+	if result != expected {
+		t.Errorf("Result not what was expected. Got %f. Expected %f", result, expected)
+	}
+}
+
+func TestDice(t *testing.T) {
+	clientSeed := ""
+	serverSeed := ""
+
+	result := calculateDice(clientSeed, serverSeed, 1)
+	result = float64(int(result*100)) / 100
+
+	expected := 6.56
+	if result != expected {
+		t.Errorf("Result not what was expected. Got %f. Expected %f", result, expected)
 	}
 }
