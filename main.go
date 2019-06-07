@@ -136,7 +136,7 @@ func shuffleKeno(clientSeed string, serverSeed string, nonce int) []int {
 		position := int(math.Floor(rolls[i] * (40 - float64(i))))
 		// that means the chosen number is this
 		chosenNumber := startingNumbers[position]
-		// remove the chosenNumber from the board
+		// remove the chosenNumber from the board, this way we're sure we can't pick the same element twice
 		startingNumbers = append(startingNumbers[:position], startingNumbers[position+1:]...)
 		chosenNumbers = append(chosenNumbers, chosenNumber)
 	}
