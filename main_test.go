@@ -36,3 +36,18 @@ func TestDice(t *testing.T) {
 		t.Errorf("Result not what was expected. Got %f. Expected %f", result, expected)
 	}
 }
+
+func TestCards(t *testing.T) {
+	clientSeed := ""
+	serverSeed := ""
+
+	result := shuffleCards(clientSeed, serverSeed, 1)
+
+	expected := []float64{3, 49, 27, 46, 10, 10, 50, 32, 31, 47, 23, 23, 17, 11, 2, 50, 49, 40, 12, 47, 29, 41, 22, 38, 1, 13, 21, 25, 36, 13, 27, 7, 3, 16, 21, 17, 34, 42, 40, 20, 14, 47, 6, 38, 0, 16, 9, 27, 33, 36, 36, 17}
+
+	for i := 0; i < len(expected); i++ {
+		if result[i] != expected[i] {
+			t.Errorf("Result not what was expected. Got %f. Expected %f", result[i], expected[i])
+		}
+	}
+}
