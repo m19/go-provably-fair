@@ -21,6 +21,17 @@ func hmacSha256(clientSeed string, serverSeed string, nonce int, round int) []by
 	return h.Sum(nil)
 }
 
+func bytesToTotal(arr []byte) float64 {
+	var total float64
+
+	for i := 0; i < len(arr); i++ {
+		value := float64(arr[i]) / math.Pow(256, float64(i+1))
+		total = total + value
+	}
+
+	return total
+}
+
 func chunkArray(arr []byte, chunkSize int) [][]byte {
 	var groups [][]byte
 
@@ -32,24 +43,14 @@ func chunkArray(arr []byte, chunkSize int) [][]byte {
 	return groups
 }
 
-func bytesToFloat64(arr []byte) float64 {
-	var total float64
-
-	for i := 0; i < len(arr); i++ {
-		value := float64(arr[i]) / math.Pow(256, float64(i+1))
-		total = total + value
-	}
-
-	return total
-}
-
-func calculateRolls(clientSeed string, serverSeed string, nonce int, round int, chunk int, limit int) []float64 {
+func calculateRolls(clientSeed string, serverSeed string, nonce int, round int, chunkSize int, limit int) []float64 {
 	bytes := hmacSha256(clientSeed, serverSeed, nonce, round)
-	bytesArray := chunkArray(bytes, chunk)
 
-	if chunk*limit > 32 {
+	if chunkSize*limit > 32 {
 		panic("hash is only 32 bytes big")
 	}
+
+	bytesArray := chunkArray(bytes, chunkSize)
 
 	if limit < 8 {
 		bytesArray = bytesArray[0:limit]
@@ -58,7 +59,7 @@ func calculateRolls(clientSeed string, serverSeed string, nonce int, round int, 
 	var totals []float64
 
 	for i := 0; i < len(bytesArray); i++ {
-		totals = append(totals, bytesToFloat64(bytesArray[i]))
+		totals = append(totals, bytesToTotal(bytesArray[i]))
 	}
 
 	return totals
