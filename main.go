@@ -125,7 +125,7 @@ func displayCards(cards []float64) []string {
 
 	for i := 0; i < len(cards); i++ {
 		cardIndex := int(cards[i])
-		shuffledDeck = append(cardsDisplayed, cardsString[cardIndex])
+		shuffledDeck = append(shuffledDeck, deck[cardIndex])
 	}
 
 	return shuffledDeck
