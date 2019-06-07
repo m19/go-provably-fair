@@ -118,6 +118,32 @@ func shuffleCards(clientSeed string, serverSeed string, nonce int) []float64 {
 	return cardIndexes
 }
 
+func shuffleKeno(clientSeed string, serverSeed string, nonce int) []int {
+	var startingNumbers []int
+	var chosenNumbers []int
+
+	for i := 0; i < 40; i++ {
+		startingNumbers = append(startingNumbers, i+1)
+	}
+
+	// we want 10 numbers total
+	var rolls []float64
+	rolls = append(rolls, calculateRolls(clientSeed, serverSeed, nonce, 0, 8)...)
+	rolls = append(rolls, calculateRolls(clientSeed, serverSeed, nonce, 1, 2)...)
+
+	for i := 0; i < len(rolls); i++ {
+		// which position?
+		position := int(math.Floor(rolls[i] * (40 - float64(i))))
+		// that means the chosen number is this
+		chosenNumber := startingNumbers[position]
+		// remove the chosenNumber from the board
+		startingNumbers = append(startingNumbers[:position], startingNumbers[position+1:]...)
+		chosenNumbers = append(chosenNumbers, chosenNumber)
+	}
+
+	return chosenNumbers
+}
+
 func displayCards(cards []float64) []string {
 	deck := [...]string{"♦2", "♥2", "♠2", "♣2", "♦3", "♥3", "♠3", "♣3", "♦4", "♥4", "♠4", "♣4", "♦5", "♥5", "♠5", "♣5", "♦6", "♥6", "♠6", "♣6", "♦7", "♥7", "♠7", "♣7", "♦8", "♥8", "♠8", "♣8", "♦9", "♥9", "♠9", "♣9", "♦10", "♥10", "♠10", "♣10", "♦J", "♥J", "♠J", "♣J", "♦Q", "♥Q", "♠Q", "♣Q", "♦K", "♥K", "♠K", "♣K", "♦A", "♥A", "♠A", "♣A"}
 
@@ -140,4 +166,5 @@ func main() {
 	fmt.Println("dice:", calculateDice(clientSeed, serverSeed, nonce))
 	fmt.Println("cards:", shuffleCards(clientSeed, serverSeed, nonce))
 	fmt.Println("cards:", displayCards(shuffleCards(clientSeed, serverSeed, nonce)))
+	fmt.Println("keno:", shuffleKeno(clientSeed, serverSeed, nonce))
 }

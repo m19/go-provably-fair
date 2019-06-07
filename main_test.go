@@ -49,3 +49,17 @@ func TestCards(t *testing.T) {
 		}
 	}
 }
+
+func TestKeno(t *testing.T) {
+	clientSeed := ""
+	serverSeed := ""
+
+	result := shuffleKeno(clientSeed, serverSeed, 1)
+	expected := []int{3, 39, 21, 35, 9, 8, 38, 25, 24, 36}
+
+	for i := 0; i < len(expected); i++ {
+		if result[i] != expected[i] {
+			t.Errorf("Result not what was expected. Got %d Expected %d", result[i], expected[i])
+		}
+	}
+}
