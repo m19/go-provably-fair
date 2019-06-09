@@ -9,14 +9,14 @@ func TestLimbo(t *testing.T) {
 	clientSeed := ""
 	serverSeed := ""
 
-	result := calculateLimbo(clientSeed, serverSeed, 1)
+	result := startLimbo(clientSeed, serverSeed, 1)
 	result = float64(int(result*100)) / 100
 	expected := 15.07
 	if result != expected {
 		t.Errorf("Result not what was expected. Got %f. Expected %f", result, expected)
 	}
 
-	result = calculateLimbo(clientSeed, serverSeed, 2)
+	result = startLimbo(clientSeed, serverSeed, 2)
 	expected = 1.82
 
 	if result != expected {
@@ -30,7 +30,7 @@ func BenchmarkLimbo(b *testing.B) {
 	serverSeed := ""
 
 	for n := 0; n < b.N; n++ {
-		result := calculateLimbo(clientSeed, serverSeed, n)
+		result := startLimbo(clientSeed, serverSeed, n)
 
 		if result < 1 {
 			bustCount = bustCount + 1
@@ -43,7 +43,7 @@ func BenchmarkLimbo(b *testing.B) {
 func TestNumber(t *testing.T) {
 	clientSeed := ""
 	serverSeed := ""
-	result := calculateNumber(10001, clientSeed, serverSeed, 1)
+	result := rollNumber(10001, clientSeed, serverSeed, 1)
 	expected := 656.8362053469755
 
 	if result != expected {
@@ -65,7 +65,7 @@ func TestDice(t *testing.T) {
 	}
 
 	for nonce, expected := range testCases {
-		result := calculateDice(clientSeed, serverSeed, nonce)
+		result := rollDice(clientSeed, serverSeed, nonce)
 
 		if result != expected {
 			t.Errorf("Result not what was expected for nonce %d. Got %f. Expected %f", nonce, result, expected)

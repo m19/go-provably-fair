@@ -43,7 +43,7 @@ func chunkArray(arr []byte, chunkSize int) [][]byte {
 	return groups
 }
 
-func calculateRolls(clientSeed string, serverSeed string, nonce int, round int, limit int) []float64 {
+func calculateNumbers(clientSeed string, serverSeed string, nonce int, round int, limit int) []float64 {
 	bytes := hmacSha256(clientSeed, serverSeed, nonce, round)
 
 	if limit > 8 {
@@ -66,10 +66,10 @@ func calculateRolls(clientSeed string, serverSeed string, nonce int, round int, 
 	return numbers
 }
 
-func calculateLimbo(clientSeed string, serverSeed string, nonce int) float64 {
+func startLimbo(clientSeed string, serverSeed string, nonce int) float64 {
 	limit := 1
 	round := 0
-	total := calculateRolls(clientSeed, serverSeed, nonce, round, limit)[0]
+	total := calculateNumbers(clientSeed, serverSeed, nonce, round, limit)[0]
 	total = total * 1000000
 
 	result := 1000000 / (math.Floor(total) + 1) * houseEdge
@@ -81,17 +81,17 @@ func calculateLimbo(clientSeed string, serverSeed string, nonce int) float64 {
 
 // calculates a number between 0 and max
 // max is exclusive
-func calculateNumber(max int, clientSeed string, serverSeed string, nonce int) float64 {
+func rollNumber(max int, clientSeed string, serverSeed string, nonce int) float64 {
 	limit := 1
 	round := 0
-	total := calculateRolls(clientSeed, serverSeed, nonce, round, limit)[0]
+	total := calculateNumbers(clientSeed, serverSeed, nonce, round, limit)[0]
 
 	return total * float64(max)
 }
 
 // this calculates a dice roll between 0 and 100.00
-func calculateDice(clientSeed string, serverSeed string, nonce int) float64 {
-	total := calculateNumber(10001, clientSeed, serverSeed, nonce)
+func rollDice(clientSeed string, serverSeed string, nonce int) float64 {
+	total := rollNumber(10001, clientSeed, serverSeed, nonce)
 	total = total / 100
 
 	rounded := float64(int(total*100)) / 100
@@ -111,7 +111,7 @@ func shuffleCards(clientSeed string, serverSeed string, nonce int) []float64 {
 		if round == 6 {
 			limit = 4
 		}
-		rolls := calculateRolls(clientSeed, serverSeed, nonce, round, limit)
+		rolls := calculateNumbers(clientSeed, serverSeed, nonce, round, limit)
 
 		for j := 0; j < len(rolls); j++ {
 			value := math.Floor(rolls[j] * 52)
@@ -132,8 +132,8 @@ func shuffleKeno(clientSeed string, serverSeed string, nonce int) []int {
 
 	// we want 10 numbers total
 	var rolls []float64
-	rolls = append(rolls, calculateRolls(clientSeed, serverSeed, nonce, 0, 8)...)
-	rolls = append(rolls, calculateRolls(clientSeed, serverSeed, nonce, 1, 2)...)
+	rolls = append(rolls, calculateNumbers(clientSeed, serverSeed, nonce, 0, 8)...)
+	rolls = append(rolls, calculateNumbers(clientSeed, serverSeed, nonce, 1, 2)...)
 
 	for i := 0; i < len(rolls); i++ {
 		// which position?
@@ -166,8 +166,8 @@ func main() {
 	serverSeed := ""
 	nonce := 1
 
-	fmt.Println("limbo:", calculateLimbo(clientSeed, serverSeed, nonce))
-	fmt.Println("dice:", calculateDice(clientSeed, serverSeed, nonce))
+	fmt.Println("limbo:", startLimbo(clientSeed, serverSeed, nonce))
+	fmt.Println("dice:", rollDice(clientSeed, serverSeed, nonce))
 	fmt.Println("cards:", shuffleCards(clientSeed, serverSeed, nonce))
 	fmt.Println("cards:", displayCards(shuffleCards(clientSeed, serverSeed, nonce)))
 	fmt.Println("keno:", shuffleKeno(clientSeed, serverSeed, nonce))
