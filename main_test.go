@@ -55,11 +55,21 @@ func TestDice(t *testing.T) {
 	clientSeed := ""
 	serverSeed := ""
 
-	result := calculateDice(clientSeed, serverSeed, 1)
+	testCases := map[int]float64{
+		1:     6.56,
+		2:     54.26,
+		3:     24.27,
+		4:     62.74,
+		100:   12.63,
+		10000: 28.49,
+	}
 
-	expected := 6.56
-	if result != expected {
-		t.Errorf("Result not what was expected. Got %f. Expected %f", result, expected)
+	for nonce, expected := range testCases {
+		result := calculateDice(clientSeed, serverSeed, nonce)
+
+		if result != expected {
+			t.Errorf("Result not what was expected for nonce %d. Got %f. Expected %f", nonce, result, expected)
+		}
 	}
 }
 
