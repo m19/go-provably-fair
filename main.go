@@ -21,15 +21,15 @@ func hmacSha256(clientSeed string, serverSeed string, nonce int, round int) []by
 	return h.Sum(nil)
 }
 
-func bytesToTotal(arr []byte) float64 {
-	var total float64
+func bytesToNumber(arr []byte) float64 {
+	var number float64
 
 	for i := 0; i < len(arr); i++ {
 		value := float64(arr[i]) / math.Pow(256, float64(i+1))
-		total = total + value
+		number = number + value
 	}
 
-	return total
+	return number
 }
 
 func chunkArray(arr []byte, chunkSize int) [][]byte {
@@ -56,13 +56,13 @@ func calculateRolls(clientSeed string, serverSeed string, nonce int, round int, 
 		bytesArray = bytesArray[0:limit]
 	}
 
-	var totals []float64
+	var numbers []float64
 
 	for i := 0; i < len(bytesArray); i++ {
-		totals = append(totals, bytesToTotal(bytesArray[i]))
+		numbers = append(numbers, bytesToNumber(bytesArray[i]))
 	}
 
-	return totals
+	return numbers
 }
 
 func calculateLimbo(clientSeed string, serverSeed string, nonce int) float64 {
