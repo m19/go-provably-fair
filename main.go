@@ -90,7 +90,8 @@ func calculateDice(clientSeed string, serverSeed string, nonce int) float64 {
 	return rounded
 }
 
-// this shuffle a deck of cards. A deck consists of 52 cards. 4 suits and 13 ranks per suit
+// this will get 52 random cards from a deck of cards. A deck consists of 52 cards. 4 suits and 13 ranks per suit
+// a card can appear more than once, this is to make sure the player doesn't have a huge advantage
 func shuffleCards(clientSeed string, serverSeed string, nonce int) []float64 {
 	limit := 8
 
