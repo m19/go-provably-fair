@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -21,6 +22,22 @@ func TestLimbo(t *testing.T) {
 	if result != expected {
 		t.Errorf("Result not what was expected. Got %f. Expected %f", result, expected)
 	}
+}
+
+func BenchmarkLimbo(b *testing.B) {
+	bustCount := 0
+	clientSeed := ""
+	serverSeed := ""
+
+	for n := 0; n < b.N; n++ {
+		result := calculateLimbo(clientSeed, serverSeed, n)
+
+		if result < 1 {
+			bustCount = bustCount + 1
+		}
+	}
+
+	fmt.Println("Bust count: ", bustCount)
 }
 
 func TestDice(t *testing.T) {
