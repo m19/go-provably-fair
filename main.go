@@ -79,12 +79,19 @@ func calculateLimbo(clientSeed string, serverSeed string, nonce int) float64 {
 	return rounded
 }
 
-// this calculates a dice roll between 0 and 100.00
-func calculateDice(clientSeed string, serverSeed string, nonce int) float64 {
+// calculates a number between 0 and max. max is exclusive
+func calculateNumber(max int, clientSeed string, serverSeed string, nonce int) float64 {
 	limit := 1
 	round := 0
 	total := calculateRolls(clientSeed, serverSeed, nonce, round, limit)[0]
-	total = total * 10001 / 100
+
+	return total * float64(max)
+}
+
+// this calculates a dice roll between 0 and 100.00
+func calculateDice(clientSeed string, serverSeed string, nonce int) float64 {
+	total := calculateNumber(10001, clientSeed, serverSeed, nonce)
+	total = total / 100
 
 	rounded := float64(int(total*100)) / 100
 

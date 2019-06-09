@@ -40,6 +40,17 @@ func BenchmarkLimbo(b *testing.B) {
 	fmt.Println("Bust count: ", bustCount)
 }
 
+func TestNumber(t *testing.T) {
+	clientSeed := ""
+	serverSeed := ""
+	result := calculateNumber(10001, clientSeed, serverSeed, 1)
+	expected := 656.8362053469755
+
+	if result != expected {
+		t.Errorf("Result not what was expected. Got %f. Expected %f", result, expected)
+	}
+}
+
 func TestDice(t *testing.T) {
 	clientSeed := ""
 	serverSeed := ""
