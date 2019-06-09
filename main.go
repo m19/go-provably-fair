@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	houseEdge = .99
+	HouseEdge = .99
 )
 
 // create a hmacSha256 with the serverSeed as the secret and clientSeed:nonce:round as the data
@@ -72,7 +72,7 @@ func startLimbo(clientSeed string, serverSeed string, nonce int) float64 {
 	total := calculateNumbers(clientSeed, serverSeed, nonce, round, limit)[0]
 	total = total * 1000000
 
-	result := 1000000 / (math.Floor(total) + 1) * houseEdge
+	result := 1000000 / (math.Floor(total) + 1) * HouseEdge
 
 	rounded := float64(int(result*100)) / 100
 
