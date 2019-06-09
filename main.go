@@ -79,7 +79,8 @@ func calculateLimbo(clientSeed string, serverSeed string, nonce int) float64 {
 	return rounded
 }
 
-// calculates a number between 0 and max. max is exclusive
+// calculates a number between 0 and max
+// max is exclusive
 func calculateNumber(max int, clientSeed string, serverSeed string, nonce int) float64 {
 	limit := 1
 	round := 0
@@ -101,27 +102,21 @@ func calculateDice(clientSeed string, serverSeed string, nonce int) float64 {
 // this will get 52 random cards from a deck of cards. A deck consists of 52 cards. 4 suits and 13 ranks per suit
 // a card can appear more than once, this is to make sure the player doesn't have a huge advantage
 func shuffleCards(clientSeed string, serverSeed string, nonce int) []float64 {
-	limit := 8
-
 	var cardIndexes []float64
 
 	// this will get the first 6*8 = 48 cards
-	for round := 0; round < 6; round++ {
+	for round := 0; round < 7; round++ {
+		limit := 8
+		// after 6 rounds we have 6*8 cards, so we only need 4 more to shuffle a deck of 52 cards
+		if round == 6 {
+			limit = 4
+		}
 		rolls := calculateRolls(clientSeed, serverSeed, nonce, round, limit)
+
 		for j := 0; j < len(rolls); j++ {
 			value := math.Floor(rolls[j] * 52)
 			cardIndexes = append(cardIndexes, value)
 		}
-	}
-
-	round := 6
-	limit = 4
-
-	// we only need 4 more bytes to get to 52 cards
-	rolls := calculateRolls(clientSeed, serverSeed, nonce, round, 4)
-	for i := 0; i < len(rolls); i++ {
-		value := math.Floor(rolls[i] * 52)
-		cardIndexes = append(cardIndexes, value)
 	}
 
 	return cardIndexes
