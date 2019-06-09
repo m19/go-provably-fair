@@ -50,6 +50,7 @@ func calculateRolls(clientSeed string, serverSeed string, nonce int, round int, 
 		panic("hash is only 8*4 = 32 bytes big")
 	}
 
+	// chunk the array into multiple arrays of bytes
 	bytesArray := chunkArray(bytes, 4)
 
 	if limit < 8 {
